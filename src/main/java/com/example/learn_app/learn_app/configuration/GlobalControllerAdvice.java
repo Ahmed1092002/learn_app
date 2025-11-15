@@ -4,6 +4,7 @@ import java.util.logging.ErrorManager;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -13,6 +14,13 @@ import com.example.learn_app.learn_app.exception.UserException;
 
 @ControllerAdvice
 public class GlobalControllerAdvice {
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorResponse> handleValidationException(MethodArgumentNotValidException ex) {
+        ErrorResponse errorResponse = new ErrorResponse();
+        errorResponse.setField(ex.getBindingResult().getFieldError().getField());
+        errorResponse.setMessage(ex.getBindingResult().getFieldError().getDefaultMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+    }
 
     @ExceptionHandler(UserException.class)
     public ResponseEntity<ErrorResponse> handleUserException(UserException ex) {
