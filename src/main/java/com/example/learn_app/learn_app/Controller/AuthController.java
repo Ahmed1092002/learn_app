@@ -29,16 +29,11 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@Valid @RequestBody UserDto createUserRequest, Errors errors) {
         if (errors.hasErrors()) {
-            List<ErrorResponse> errorResponses = errors.getFieldErrors().stream()
-                    .map(
-                            err -> {
-                                ErrorResponse errorResponse = new ErrorResponse();
-                                errorResponse.setField(err.getField());
-                                errorResponse.setMessage(err.getDefaultMessage());
-                                return errorResponse;
-                            })
-                    .toList();
-            return ResponseEntity.badRequest().body(errorResponses);
+
+            return ResponseEntity.badRequest().body(
+                    errors.getFieldErrors().stream().map(err -> {
+                        return err.getField() + ": " + err.getDefaultMessage();
+                    }).toList());
         }
 
         UserResponse newUser = userService.createUser(createUserRequest);
@@ -49,16 +44,13 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<?> loginUser(@Valid @RequestBody LoginUser userDto, Errors errors) {
         if (errors.hasErrors()) {
-            List<ErrorResponse> errorResponses = errors.getFieldErrors().stream()
-                    .map(
-                            err -> {
-                                ErrorResponse errorResponse = new ErrorResponse();
-                                errorResponse.setField(err.getField());
-                                errorResponse.setMessage(err.getDefaultMessage());
-                                return errorResponse;
-                            })
-                    .toList();
-            return ResponseEntity.badRequest().body(errorResponses);
+            if (errors.hasErrors()) {
+
+                return ResponseEntity.badRequest().body(
+                        errors.getFieldErrors().stream().map(err -> {
+                            return err.getField() + ": " + err.getDefaultMessage();
+                        }).toList());
+            }
         }
         UserResponse user = userService.loginUser(userDto);
         return ResponseEntity.ok(user);

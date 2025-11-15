@@ -8,6 +8,8 @@ import com.example.learn_app.learn_app.dto.LoginUser;
 import com.example.learn_app.learn_app.dto.UserDto;
 import com.example.learn_app.learn_app.dto.UserResponse;
 import com.example.learn_app.learn_app.entity.User;
+import com.example.learn_app.learn_app.exception.InvalidPasswordException;
+import com.example.learn_app.learn_app.exception.UserException;
 import com.example.learn_app.learn_app.repository.UserRepository;
 
 @Service
@@ -40,9 +42,9 @@ public class UserService {
     public UserResponse loginUser(LoginUser loginUser) {
         Optional<User> userObject = userRepository.findByUsernameOrEmail(loginUser.getUsernameOrEmail(),
                 loginUser.getUsernameOrEmail());
-        User user = userObject.orElseThrow(() -> new RuntimeException("User not found"));
+        User user = userObject.orElseThrow(() -> new UserException("User Not Find"));
         if (!verifyPassword(user, loginUser.getPassword())) {
-            throw new RuntimeException("Invalid password");
+            throw new InvalidPasswordException("Invalid password");
         }
 
         UserResponse userResponse = new UserResponse();
