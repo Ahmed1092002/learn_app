@@ -3,6 +3,7 @@ package com.example.learn_app.learn_app.service;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +27,13 @@ public class UserService {
     }
 
     public UserResponse createUser(UserDto user) {
+        if (userRepository.existsByEmail(user.getEmail())) {
+            throw new DataIntegrityViolationException("Email already exists, please use another one");
+        }
+
+        if (userRepository.existsByUsername(user.getUsername())) {
+            throw new DataIntegrityViolationException("Username already exists, please choose another");
+        }
         User newUser = new User();
         newUser.setUsername(user.getUsername());
         newUser.setEmail(user.getEmail());

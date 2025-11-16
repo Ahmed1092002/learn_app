@@ -2,6 +2,7 @@ package com.example.learn_app.learn_app.configuration;
 
 import java.util.logging.ErrorManager;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -19,6 +20,14 @@ public class GlobalControllerAdvice {
         ErrorResponse errorResponse = new ErrorResponse();
         errorResponse.setField(ex.getBindingResult().getFieldError().getField());
         errorResponse.setMessage(ex.getBindingResult().getFieldError().getDefaultMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ErrorResponse> handleDataIntegrityViolationException(DataIntegrityViolationException ex) {
+        ErrorResponse errorResponse = new ErrorResponse();
+        errorResponse.setField("entity");
+        errorResponse.setMessage(ex.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
 

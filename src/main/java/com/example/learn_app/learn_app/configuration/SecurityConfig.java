@@ -9,22 +9,24 @@ import org.springframework.security.config.Customizer;
 
 @Configuration
 public class SecurityConfig {
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .authorizeHttpRequests((requests) -> requests
+        @Bean
+        public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+                http
+                                .authorizeHttpRequests((requests) -> requests
 
-                        .requestMatchers("/api/auth/register", "/api/auth/login")
-                        .permitAll()
-                        .anyRequest().authenticated()
+                                                .requestMatchers("/api/auth/register", "/api/auth/login")
+                                                .permitAll()
+                                                .anyRequest().authenticated()
 
-                )
-                .httpBasic(Customizer
-                        .withDefaults())
-                .formLogin((form) -> form.disable())
-                .logout((logout) -> logout.permitAll())
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .csrf(csrf -> csrf.disable());
-        return http.build();
-    }
+                                )
+                                .httpBasic(Customizer
+                                                .withDefaults())
+                                .formLogin((form) -> form.disable())
+                                .logout((logout) -> logout.permitAll())
+                                .sessionManagement(session -> session
+                                                .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                                .csrf(csrf -> csrf.disable());
+                return http.build();
+        }
+
 }
