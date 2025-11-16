@@ -2,6 +2,8 @@ package com.example.learn_app.learn_app.service;
 
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.example.learn_app.learn_app.dto.LoginUser;
@@ -16,16 +18,18 @@ import com.example.learn_app.learn_app.repository.UserRepository;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public UserResponse createUser(UserDto user) {
         User newUser = new User();
         newUser.setUsername(user.getUsername());
         newUser.setEmail(user.getEmail());
-        newUser.setPassword(user.getPassword());
+        newUser.setPassword(passwordEncoder.encode(user.getPassword()));
         User savedUser = userRepository.save(newUser);
         UserResponse userResponse = new UserResponse();
         userResponse.setId(savedUser.getId());
@@ -36,7 +40,7 @@ public class UserService {
     }
 
     public boolean verifyPassword(User user, String password) {
-        return user.getPassword().equals(password);
+        return passwordEncoder.matches(password, user.getPassword());
     }
 
     public UserResponse loginUser(LoginUser loginUser) {
