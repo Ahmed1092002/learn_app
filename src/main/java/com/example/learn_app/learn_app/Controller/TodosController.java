@@ -52,9 +52,21 @@ public class TodosController {
     }
 
     @PostMapping("/CreateTodos")
-    public ResponseEntity<Todos> createTodoString(@RequestBody TodosDto entity ) {
+    public ResponseEntity<Todos> createTodoString(@RequestBody TodosDto entity) {
         Todos createdTodo = todosService.createTodo(entity);
         return ResponseEntity.ok(createdTodo);
+    }
+
+    @GetMapping("/paginatedTodos")
+    public ResponseEntity<?> getPaginatedTodos(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "true") boolean ascending,
+            @RequestParam(defaultValue = "") String title) {
+
+        return ResponseEntity
+                .ok(todosService.getTodosByUserIdWithPaginationWithAscending(page, size, sortBy, title, ascending));
     }
 
 }

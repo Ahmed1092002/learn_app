@@ -3,6 +3,7 @@ package com.example.learn_app.learn_app.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -12,6 +13,9 @@ import com.example.learn_app.learn_app.dto.UpdateTodoDto;
 import com.example.learn_app.learn_app.entity.Todos;
 import com.example.learn_app.learn_app.repository.TodosRepository;
 import com.example.learn_app.learn_app.repository.UserRepository;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Page;
 
 @Service
 public class TodosService {
@@ -44,6 +48,31 @@ public class TodosService {
         Long userId = getCurrentUserId();
 
         return todosRepository.findByUserId(userId);
+    }
+
+    public Page<Todos> getTodosByUserIdWithPagination(int page, int size, String title) {
+        Long userId = getCurrentUserId();
+        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
+
+        return todosRepository.findByUserIdAndTitleContainingIgnoreCase(userId, title, pageable);
+
+    }
+
+    // another example
+    public Page<Todos> getTodosByUserIdWithPaginationWithAscending(int page, int size, String sortedColumn,
+            String title,
+            boolean ascending) {
+        Long userId = getCurrentUserId();
+        if (page == 0) {
+            throw new IllegalArgumentException("Page index must be greater than 0");
+        }
+
+        Sort sort = ascending ? Sort.by(sortedColumn).ascending() : Sort.by(sortedColumn).descending();
+
+        Pageable pageable = PageRequest.of(page - 1, size, sort);
+
+        return todosRepository.findByUserIdAndTitleContainingIgnoreCase(userId, title, pageable);
+
     }
 
     public Todos createTodo(TodosDto todoDto) {
