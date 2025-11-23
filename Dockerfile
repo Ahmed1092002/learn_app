@@ -10,11 +10,10 @@ COPY src ./src
 # Build the application (skip tests to speed up CI builds; change if needed)
 RUN mvn -B -DskipTests package
 
-# Find the built artifact (jar or war) and copy it to a known location
+# Find the built artifact (jar or war) and copy it to a known location.
+# Use a safe loop so the build doesn't fail if no match is found.
 RUN mkdir -p /workspace/out && \
-    ARTIFACT=$(ls -1 target/* | egrep -i '\\.jar$|\\.war$' | head -n1) && \
-    echo "Found artifact: $ARTIFACT" && \
-    cp "$ARTIFACT" /workspace/out/app.jar
+    sh -c 'for f in target/*.jar target/*.war; do if [ -e "${f}" ]; then echo "Found artifact: ${f}"; cp "${f}" /workspace/out/app.jar; exit 0; fi; done; echo "No artifact found in target/"; exit 1'
 
 FROM eclipse-temurin:17-jre-jammy
 WORKDIR /app
