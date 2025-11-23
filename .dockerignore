@@ -1,13 +1,10 @@
 # Ignore build output and local config
 
 target
-.mvn
 .idea
 .vscode
 .git
 _.log
 _.tmp
 \*.swp
-mvnw.cmd
-mvnw
 README.md

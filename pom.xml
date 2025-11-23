@@ -11,7 +11,7 @@
 	<groupId>com.example.learn_app</groupId>
 	<artifactId>learn_app</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>war</packaging>
+	<packaging>jar</packaging>
 	<name>learn_app</name>
 	<description>Demo project for Spring Boot</description>
 	<url/>
@@ -51,11 +51,7 @@
 			<artifactId>lombok</artifactId>
 			<optional>true</optional>
 		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-tomcat</artifactId>
-			<scope>provided</scope>
-		</dependency>
+		<!-- Embedded Tomcat will be provided by spring-boot-starter-web for executable JAR packaging -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
