@@ -1,0 +1,10 @@
+# Ignore build output and local config
+
+target
+.idea
+.vscode
+.git
+_.log
+_.tmp
+\*.swp
+README.md

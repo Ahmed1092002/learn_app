@@ -1,5 +1,7 @@
 package com.example.learn_app.learn_app.dto;
 
+import com.example.learn_app.learn_app.Validate.PasswordValidate;
+
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
@@ -10,6 +12,7 @@ public class LoginUser {
     private String usernameOrEmail;
 
     @NotBlank(message = "Password is required")
+    // @PasswordValidate
     private String password;
 
 }
